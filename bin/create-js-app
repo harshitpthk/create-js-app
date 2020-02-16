@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+var esm = require("esm");
+
+require = esm(module /*, options*/);
+var cli = require("../src/cli");
+
+cli.run(process.argv);

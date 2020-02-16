@@ -1,0 +1,29 @@
+{
+  "name": "@xarv/create-js-app",
+  "version": "1.0.0",
+  "description": "CLI to bootstrap new JS projects",
+  "main": "src/index.js",
+  "bin": {
+    "@xarv/create-js-app": "bin/create-js-app",
+    "create-js-app": "bin/create-js-app"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "create-js-app"
+  ],
+  "author": "xarv",
+  "license": "MIT",
+  "dependencies": {
+    "arg": "^4.1.3",
+    "chalk": "^3.0.0",
+    "esm": "^3.2.25",
+    "inquirer": "^7.0.4",
+    "ncp": "^2.0.0"
+  }
+}
