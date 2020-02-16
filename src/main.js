@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import fs from 'fs';
-import ncp from 'ncp';
 import path from 'path';
 import { promisify } from 'util';
 
@@ -26,7 +25,6 @@ async function copyTemplateFiles(options) {
 }
 
 export async function createProject(options) {
-    console.log(options);
     options = {
         ...options,
         targetDirectory: process.cwd(),
@@ -37,9 +35,16 @@ export async function createProject(options) {
     // Common Files Directory
     const commonFilesDir = path.resolve(
         new URL(currentFileUrl).pathname,
-        '../../templates/common'
+        '../../templates',
+        'common'
     );
     options.commonDirectorty = commonFilesDir;
+    try {
+        await access(commonFilesDir, fs.constants.R_OK);
+    } catch (err) {
+        console.error('%s Invalid template name', chalk.red.bold('ERROR'));
+        process.exit(1);
+    }
 
     // Template Files Directory
     const templateDir = path.resolve(
