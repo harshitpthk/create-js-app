@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import fs from 'fs';
+import ncp from 'ncp';
 import path from 'path';
 import { promisify } from 'util';
 
@@ -25,9 +26,16 @@ async function copyTemplateFiles(options) {
 }
 
 export async function createProject(options) {
+    let targetDirectory = path.resolve(process.cwd(), options.projectName);
+    console.log(
+        'Initializing project %s at %s',
+        chalk.green.bold(options.projectName),
+        chalk.gray(targetDirectory)
+    );
+
     options = {
         ...options,
-        targetDirectory: process.cwd(),
+        targetDirectory,
     };
 
     const currentFileUrl = import.meta.url;
