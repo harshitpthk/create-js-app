@@ -1,5 +1,5 @@
 {
-    "name": "{{my-application-name}}",
+    "name": "test-js-app",
     "version": "1.0.0",
     "description": "Generated via create-js-app [TODO:@author Change this description]",
     "scripts": {

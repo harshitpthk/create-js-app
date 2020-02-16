@@ -8,6 +8,17 @@ var URL = require('url').URL;
 const access = promisify(fs.access);
 const copy = promisify(ncp);
 
+// Copy Files
+async function copyFiles(options) {
+    await copyCommonFiles(options);
+    await copyTemplateFiles(options);
+}
+
+async function copyCommonFiles(options) {
+    return copy(options.commonDirectorty, options.targetDirectory, {
+        clobber: false,
+    });
+}
 async function copyTemplateFiles(options) {
     return copy(options.templateDirectory, options.targetDirectory, {
         clobber: false,
@@ -22,10 +33,15 @@ export async function createProject(options) {
     };
 
     const currentFileUrl = import.meta.url;
+
+    // Common Files Directory
     const commonFilesDir = path.resolve(
         new URL(currentFileUrl).pathname,
         '../../templates/common'
     );
+    options.commonDirectorty = commonFilesDir;
+
+    // Template Files Directory
     const templateDir = path.resolve(
         new URL(currentFileUrl).pathname,
         '../../templates',
@@ -41,7 +57,7 @@ export async function createProject(options) {
     }
 
     console.log('Copy project files');
-    // await copyTemplateFiles(options);
+    await copyFiles(options);
 
     console.log('%s Project ready', chalk.green.bold('DONE'));
     return true;
