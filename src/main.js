@@ -4,6 +4,8 @@ import ncp from 'ncp';
 import path from 'path';
 import { promisify } from 'util';
 import Listr from 'listr';
+import execa from 'execa';
+import { projectInstall } from 'pkg-install';
 
 var URL = require('url').URL;
 const access = promisify(fs.access);
@@ -106,6 +108,10 @@ export async function createProject(options) {
 
     await tasks.run();
 
-    console.log('%s Project ready', chalk.green.bold('DONE'));
+    console.log(
+        '%s Project %s is ready',
+        chalk.green.bold('DONE'),
+        chalk.green.bold(options.projectName)
+    );
     return true;
 }
