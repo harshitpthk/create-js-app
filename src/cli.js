@@ -1,6 +1,6 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
-import { createProject } from './main';
+import { createProject, TEMPLATE_CHOICES } from './main';
 
 function parseArgumentsIntoOptions(rawArgs) {
     const args = arg(
@@ -27,7 +27,7 @@ function parseArgumentsIntoOptions(rawArgs) {
 
 async function promptForMissingOptions(options) {
     const defaultProjectName = 'test-js-app';
-    const defaultTemplate = 'JavaScript';
+    const defaultTemplate = TEMPLATE_CHOICES.JAVASCRIPT;
     const questions = [];
 
     if (!options.projectName) {
@@ -50,7 +50,7 @@ async function promptForMissingOptions(options) {
             type: 'list',
             name: 'template',
             message: 'Please choose which project template to use',
-            choices: ['JavaScript', 'TypeScript'],
+            choices: [TEMPLATE_CHOICES.JAVASCRIPT, TEMPLATE_CHOICES.TYPESCRIPT],
             default: defaultTemplate,
         });
     }

@@ -5,6 +5,7 @@ import path from 'path';
 import { promisify } from 'util';
 import Listr from 'listr';
 import execa from 'execa';
+import os from 'os';
 import { projectInstall } from 'pkg-install';
 
 var URL = require('url').URL;
@@ -25,6 +26,55 @@ async function copyCommonFiles(options) {
 async function copyTemplateFiles(options) {
     return copy(options.templateDirectory, options.targetDirectory, {
         clobber: false,
+    });
+}
+// create package.json
+async function createPackageJson(options) {
+    let packageJson = {
+        name: options.projectName,
+        version: '0.1.0',
+        description:
+            'Generated via @xarv/create-js-app [TODO Change this description]',
+        scripts: {
+            prebuild: 'npm run clean',
+            clean: 'rimraf ./dist/**',
+            build: 'webpack',
+            test: 'echo "Error: no test specified" && exit 1',
+        },
+        author: '',
+        license: 'MIT',
+        devDependencies: {
+            'html-webpack-plugin': '^3.2.0',
+            rimraf: '^3.0.2',
+            webpack: '^4.41.5',
+            'webpack-cli': '^3.3.10',
+        },
+    };
+
+    if (options.template === TEMPLATE_CHOICES.JAVASCRIPT) {
+        // NO_CHANGE to package.json
+    } else if (options.template === TEMPLATE_CHOICES.TYPESCRIPT) {
+        // add more dependency to package.json
+        packageJson.devDependencies = {
+            'html-webpack-plugin': '^3.2.0',
+            rimraf: '^3.0.2',
+            webpack: '^4.41.5',
+            'webpack-cli': '^3.3.10',
+            'ts-loader': '^6.2.1',
+            typescript: '^3.7.5',
+        };
+    }
+
+    return new Promise(function(resolve, reject) {
+        fs.writeFile(
+            path.join(options.targetDirectory, 'package.json'),
+            JSON.stringify(packageJson, null, 2) + os.EOL,
+            'utf8',
+            function(err) {
+                if (err) reject(err);
+                else resolve();
+            }
+        );
     });
 }
 
@@ -89,6 +139,10 @@ export async function createProject(options) {
             task: () => copyFiles(options),
         },
         {
+            title: 'Create package.json for project',
+            task: () => createPackageJson(options),
+        },
+        {
             title: 'Initialize git',
             task: () => initGit(options),
             enabled: () => options.git,
@@ -115,3 +169,8 @@ export async function createProject(options) {
     );
     return true;
 }
+
+export const TEMPLATE_CHOICES = {
+    JAVASCRIPT: 'JavaScript',
+    TYPESCRIPT: 'TypeScript',
+};
