@@ -17,6 +17,11 @@
         "cli",
         "create-js-app"
     ],
+    "files": [
+        "bin/",
+        "src/",
+        "templates/"
+    ],
     "author": "xarv",
     "license": "MIT",
     "dependencies": {
