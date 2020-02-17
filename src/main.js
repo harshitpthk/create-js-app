@@ -3,6 +3,7 @@ import fs from 'fs';
 import ncp from 'ncp';
 import path from 'path';
 import { promisify } from 'util';
+import Listr from 'listr';
 
 var URL = require('url').URL;
 const access = promisify(fs.access);
@@ -69,8 +70,25 @@ export async function createProject(options) {
         process.exit(1);
     }
 
-    console.log('Copy project files');
-    await copyFiles(options);
+    const tasks = new Listr([
+        {
+            title: 'Copy project files',
+            task: () => copyFiles(options),
+        },
+        {
+            title: 'Install dependencies',
+            task: () =>
+                projectInstall({
+                    cwd: options.targetDirectory,
+                }),
+            skip: () =>
+                !options.runInstall
+                    ? 'Pass --install to automatically install dependencies'
+                    : undefined,
+        },
+    ]);
+
+    await tasks.run();
 
     console.log('%s Project ready', chalk.green.bold('DONE'));
     return true;
