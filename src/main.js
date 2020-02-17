@@ -26,6 +26,17 @@ async function copyTemplateFiles(options) {
     });
 }
 
+// Git init utility
+async function initGit(options) {
+    const result = await execa('git', ['init'], {
+        cwd: options.targetDirectory,
+    });
+    if (result.failed) {
+        return Promise.reject(new Error('Failed to initialize git'));
+    }
+    return;
+}
+
 export async function createProject(options) {
     let targetDirectory = path.resolve(process.cwd(), options.projectName);
     console.log(
@@ -74,6 +85,11 @@ export async function createProject(options) {
         {
             title: 'Copy project files',
             task: () => copyFiles(options),
+        },
+        {
+            title: 'Initialize git',
+            task: () => initGit(options),
+            enabled: () => options.git,
         },
         {
             title: 'Install dependencies',
