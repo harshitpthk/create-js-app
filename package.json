@@ -1,6 +1,6 @@
 {
     "name": "@xarv/create-js-app",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "CLI to bootstrap new JS projects",
     "main": "src/index.js",
     "bin": {
