@@ -1,4 +1,5 @@
 import arg from 'arg';
+import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { createProject, TEMPLATE_CHOICES } from './main';
 
@@ -8,9 +9,11 @@ function parseArgumentsIntoOptions(rawArgs) {
             '--git': Boolean,
             '--yes': Boolean,
             '--install': Boolean,
+            '--help': Boolean,
             '-g': '--git',
             '-y': '--yes',
             '-i': '--install',
+            '-h': '--help',
         },
         {
             argv: rawArgs.slice(2), // removing the first two arguments as they represent the execution environment
@@ -22,7 +25,22 @@ function parseArgumentsIntoOptions(rawArgs) {
         projectName: args._[0],
         template: args._[1],
         runInstall: args['--install'] || false,
+        help: args[`--help`] || false,
     };
+}
+
+function showHelp(options) {
+    console.log(chalk.green.bold('Creating an App'));
+    console.log(`1. npx @xarv/create-js-app my-app`);
+    console.log(`1. npm init @xarv/js-app my-app`);
+    console.log();
+    console.log(chalk.green.bold('Options'));
+    console.log(`
+        1. --git/-g #initialize the package as a git repo \n
+        2. --install/-i #install the dependency at the time of project creation \n
+        3. --yes/-y #skip prompts with defaults\n
+        4. --help/-h #options and usage\n
+    `);
 }
 
 async function promptForMissingOptions(options) {
@@ -75,6 +93,10 @@ async function promptForMissingOptions(options) {
 
 export async function run(args) {
     let options = parseArgumentsIntoOptions(args);
-    options = await promptForMissingOptions(options);
-    await createProject(options);
+    if (options.help) {
+        showHelp(options);
+    } else {
+        options = await promptForMissingOptions(options);
+        await createProject(options);
+    }
 }
