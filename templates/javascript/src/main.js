@@ -1,1 +1,1 @@
-console.log('Generated via create-js-app');
+console.log('Generated via @xarv/create-js-app');
